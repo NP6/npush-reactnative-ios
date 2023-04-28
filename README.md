@@ -196,54 +196,81 @@ class MyAppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDe
 Suppose we have an application with a login & register form and we want to attach the current device subscription to the logged user.
 We could only identify the users by hash, id or unicity criteria. 
 
-**Note : All of these identifiers are strongly linked to the NP6 CM platform.**
+**Note : All of these identifiers are strongly linked to the NP6 CM platform. Please be sure to have one of this 3 identifiers in your user representation before continue. **
 
-Please be sure to have one of this 3 identifiers in your user representation before continue. 
-
-##### Example attaching device subscription by hash
-
-```swift
-
-      NPush.instance.SetContact(type: .HashRepresentation, value: <hash>)
-
-```
+### Create react package  
+Declare a new ReactPackage by creating a new file implementation file called **NPushModule.h**
 
 ```objective-c
-
-    NPush *npush = [NPush instance];
-
-    [npush SetContactWithType :ContactTypeHashRepresentation value:@<hash>];
-
+#import <React/RCTBridgeModule.h>
+@interface RCTNPushModule : NSObject <RCTBridgeModule>
+@end
 ```
 
-##### Example attaching device subscription by unicity
-
-```swift
-
-      NPush.instance.SetContact(type: .UnicityRepresentation, value:<unicity>)
-
-```
+let’s start implementing the native module. Create the corresponding implementation file, RCTNPushModule.m, in the same folder and include the following content:
 
 ```objective-c
+#import <Foundation/Foundation.h>
+#import "RCTNPushModule.h"
 
-    NPush *npush = [NPush instance];
+@implementation RCTNPushModule
 
-    [npush SetContactWithType :ContactTypeUnicityRepresentation value:@<unicity>];
+// To export a module named RCTNPushModule
+RCT_EXPORT_MODULE(RCTNPushModule);
 
+@end
 ```
 
-##### Example attaching device subscription by id
-
-```swift
-
-      NPush.instance.SetContact(type: .IdRepresentation, value:<id>)
-
-```
+The native module can then be accessed in JS like this:
 
 ```objective-c
+const {NPushModule} = ReactNative.NativeModules;
+```
 
-    NPush *npush = [NPush instance];
+### Implement contact methods   
 
-    [npush SetContactWithType :ContactTypeIdRepresentation value:@<id>];
+Use one of these functions depending on the type of credential you are using.
 
+Example attaching device subscription by hash
+
+```objective-c
+RCT_EXPORT_METHOD(setContactByHash:(NSString *)hash)
+{
+    [npush SetContact :ContactTypeUnicityRepresentation value:@<hash>];
+}
+```
+
+ Example attaching device subscription by unicity
+```objective-c
+RCT_EXPORT_METHOD(setContactByUnicity:(NSString *)unicity)
+{
+    [npush SetContact :ContactTypeUnicityRepresentation value:@<unicity>];
+}
+```
+
+
+ Example attaching device subscription by id
+```objective-c
+RCT_EXPORT_METHOD(setContactById:(NSString *)id)
+{
+    [npush SetContact :ContactTypeIdRepresentation value:@<id>];
+}
+```
+
+The last step is calling one of previous declarated methods in react native as follow :
+
+### Example using native module attaching device subscription by id
+
+``` javascript
+// Example using native module attaching device subscription by id 
+const {NPushModule} = ReactNative.NativeModules;
+...  
+ NPushModule.setContactById('000T39KL');
+...  
+```
+
+If everything is done. You will see the following lines in your application log :
+
+```
+I/np6-messaging: Subscription created successfully
 ```
