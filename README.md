@@ -7,7 +7,7 @@ This library is a part of NP6 Push Notifications service, it allow you to intera
 ## Table of content
 1.	[Prerequisites](https://github.com/NP6/npush-ios#prerequisites)
 2.	[Installation](https://github.com/NP6/npush-ios#installation)
-3.	[Troubleshooting]()
+3.	[Troubleshooting](https://github.com/NP6/npush-ios#troubleshooting)
 
 
 ## Prerequisites
@@ -274,3 +274,6 @@ If everything is done. You will see the following lines in your application log 
 ```
 I/np6-messaging: Subscription created successfully
 ```
+
+## Troubleshooting
+
