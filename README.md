@@ -19,6 +19,44 @@ Whe are going to review all the steps needed to be done before installing NPush 
 Before continuing, you need to add remote push notification permissions for your application. If you haven't done this step before please follow this 
 [tutorial]().
 
+### Add Notification Service Extension 
+
+
+Please ensure having declared a new Notification Service Extesnion Target to your project. If not please follow this [tutorial](https://developer.apple.com/documentation/usernotifications/unnotificationserviceextension?language=objc)
+
+** Push Notification and Groups capabilities are requireds **
+````swift
+class NotificationService: UNNotificationServiceExtension {
+
+    var contentHandler: ((UNNotificationContent) -> Void)?
+
+    override func didReceive(_ request: UNNotificationRequest, withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
+        self.contentHandler = contentHandler
+        
+        NPush.instance.didReceive(request: request, contentHandler: contentHandler)
+    }
+}
+````
+
+````objective-c
+@interface NotificationService ()
+
+@property (nonatomic, strong) void (^contentHandler)(UNNotificationContent *contentToDeliver);
+
+@end
+
+@implementation NotificationService
+
+- (void)didReceiveNotificationRequest:(UNNotificationRequest *)request withContentHandler:(void (^)(UNNotificationContent * _Nonnull))contentHandler {
+    self.contentHandler = contentHandler;
+        
+    self.contentHandler(self.bestAttemptContent);
+}
+
+@end
+
+
+````
 
 ### Add AppDelegate 
 
@@ -160,7 +198,7 @@ class MyAppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDe
     
     NPush *npush = [NPush instance];
     
-    [npush InitWithConfigWithConfig:config];
+    [npush didReceive:config];
     return YES;
 }
 
@@ -189,7 +227,6 @@ class MyAppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDe
 
 @end
 ```
-
 
 ### Attach contact to device subscription 
 
